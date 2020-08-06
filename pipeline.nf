@@ -33,16 +33,16 @@ params.run_name = null
 // input folder
 params.input_folder = null
 
-// analysis folder
-analysis_folder = params.input_folder + "analysis"
-
 // results folder
-//params.results_folder = params.input_folder + "results"
+params.results_folder = null
 
-// genome parameter
-//if (params.genome == null){
-//	params.genome = 'hg38'
-//}
+// parameters
+params.cpus = null
+params.genome_bwa = null
+params.genome_gatk = null
+params.gatk_dbsnp = null
+params.gatk_indels = null
+
 
 // Nextflow script path
 nfPipelinePath = "${workflow.scriptFile}"
@@ -51,11 +51,11 @@ nfPipelinePath = "${workflow.scriptFile}"
 analysis_name = params.run_name
 
 // outputs
-fastq_folder = file(params.input_folder + "/fastq")
-fastq_folder.mkdir()
-
-analysis_folder = file(params.input_folder + "/analysis")
+analysis_folder = file(params.results_folder + "/analysis")
 analysis_folder.mkdir()
+
+fastq_folder = file(params.results_folder + "/fastq")
+fastq_folder.mkdir()
 
 // check fastq files and store into channels (R1 and R2)
 listOfFiles = file(params.input_folder + '/*')
@@ -121,11 +121,11 @@ process bwaMapping {
 	script:
 	"""
 	if [ -s ${R2FqSample} ]; then
-		bwa mem -t ${task.cpus} $genome ${R1FqSample} ${R2FqSample} | \\
-		samtools view -bS -q1 -@ ${task.cpus} > ${analysis_name}.bam
+		bwa mem -t ${params.cpus} ${params.genome_bwa} ${R1FqSample} ${R2FqSample} | \\
+		samtools view -bS -q1 -@ ${params.cpus} > ${analysis_name}.bam
 	else
-		bwa mem -t ${task.cpus} $genome ${R1FqSample} | \\
-		samtools view -bS -q1 -@ ${task.cpus} > ${analysis_name}.bam
+		bwa mem -t ${params.cpus} ${params.genome_bwa} ${R1FqSample} | \\
+		samtools view -bS -q1 -@ ${params.cpus} > ${analysis_name}.bam
 	fi
 	"""
 }
@@ -191,9 +191,9 @@ process baseRecal {
 	"""
 	gatk BaseRecalibrator \\
 	-I ${bam_dedup} \\
-	-R $gatk_ref_fasta \\
-	--known-sites $gatk_bundle_dbsnp \\
-	--known-sites $gatk_bundle_Mills_indels \\
+	-R ${params.genome_gatk} \\
+	--known-sites ${params.gatk_dbsnp} \\
+	--known-sites ${params.gatk_indels} \\
 	-O recalibration.table
 	"""
 }
@@ -213,7 +213,7 @@ process applyBQSR {
 	script:
 	"""
 	gatk ApplyBQSR \\
-	-R $gatk_ref_fasta \\
+	-R ${params.genome_gatk} \\
 	-I ${bam_dedup_2} \\
 	--bqsr-recal-file ${recal_table} \\
 	-O ${analysis_name}_RG.dedup.recal.bam \\
@@ -235,10 +235,10 @@ process haplotypeCaller {
 	script:
 	"""
 	gatk --java-options \"-Xmx8g\" HaplotypeCaller \\
-	-R $gatk_ref_fasta \\
+	-R ${params.genome_gatk}} \\
 	-I ${bam_recal} \\
 	-O ${analysis_name}.all.vcf \\
-	-D $gatk_bundle_dbsnp
+	-D ${params.gatk_dbsnp}
 	"""
 }
 
