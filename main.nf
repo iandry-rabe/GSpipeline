@@ -58,7 +58,7 @@ fastq_folder = file(params.results_folder + "/fastq")
 fastq_folder.mkdir()
 
 // check fastq files and store into channels (R1 and R2)
-listOfFiles = file(params.input_folder + '/*')
+listOfFiles = file(params.input_folder)
 R1Fq = Channel.from(listOfFiles).filter(~/.*(_1.fq|R1.fastq|_R1_(\d+).fastq).gz$/)
 R2Fq = Channel.from(listOfFiles).filter(~/.*(_2.fq|R2.fastq|_R2_(\d+).fastq).gz$/)
 
