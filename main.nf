@@ -51,10 +51,11 @@ nfPipelinePath = "${workflow.scriptFile}"
 analysis_name = params.run_name
 
 // outputs
-analysis_folder = file(params.results_folder + "/analysis")
+//analysis_folder = file(params.results_folder + "/analysis")
+analysis_folder = file("analysis")
 analysis_folder.mkdir()
 
-fastq_folder = file(params.results_folder + "/fastq")
+fastq_folder = file("fastq")
 fastq_folder.mkdir()
 
 // check fastq files and store into channels (R1 and R2)
