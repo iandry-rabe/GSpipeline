@@ -55,6 +55,7 @@ analysis_name = params.run_name
 analysis_folder = file("analysis")
 analysis_folder.mkdir()
 
+//analysis_folder = file(params.results_folder + "/fastq")
 fastq_folder = file("fastq")
 fastq_folder.mkdir()
 
@@ -122,11 +123,11 @@ process bwaMapping {
 	script:
 	"""
 	if [ -s ${R2FqSample} ]; then
-		bwa mem -t ${params.cpus} ${params.genome_bwa} ${R1FqSample} ${R2FqSample} | \\
-		samtools view -bS -q1 -@ ${params.cpus} > ${analysis_name}.bam
+		/pipeline/tools/bwa/bwa mem -t ${params.cpus} ${params.genome_bwa} ${R1FqSample} ${R2FqSample} | \\
+		/pipeline/tools/samtools/samtools view -bS -q1 -@ ${params.cpus} > ${analysis_name}.bam
 	else
-		bwa mem -t ${params.cpus} ${params.genome_bwa} ${R1FqSample} | \\
-		samtools view -bS -q1 -@ ${params.cpus} > ${analysis_name}.bam
+		/pipeline/tools/bwa/bwa mem -t ${params.cpus} ${params.genome_bwa} ${R1FqSample} | \\
+		/pipeline/tools/samtools/samtools view -bS -q1 -@ ${params.cpus} > ${analysis_name}.bam
 	fi
 	"""
 }
