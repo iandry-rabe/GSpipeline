@@ -64,6 +64,7 @@ listOfFiles = file(params.input_folder)
 R1Fq = Channel.from(listOfFiles).filter(~/.*(_1.fq|R1.fastq|_R1_(\d+).fastq).gz$/)
 R2Fq = Channel.from(listOfFiles).filter(~/.*(_2.fq|R2.fastq|_R2_(\d+).fastq).gz$/)
 
+genome_bwa = Channel.from(params.genome_bwa)
 
 // cat fastq
 process catFq1 {
@@ -116,6 +117,7 @@ process bwaMapping {
 	file R1FqSample
 	file R2FqSample
 	file catR2_ok
+	file '*' from genome_bwa
 
 	output:
 	file("*.bam") into bam_files
