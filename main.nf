@@ -66,8 +66,8 @@ listOfFiles = file(params.input_folder)
 R1Fq = Channel.from(listOfFiles).filter(~/.*(_1.fq|R1.fastq|_R1_(\d+).fastq).gz$/)
 R2Fq = Channel.from(listOfFiles).filter(~/.*(_2.fq|R2.fastq|_R2_(\d+).fastq).gz$/)
 
-genome_bwa = Channel.file(params.genome_bwa)
-bwa_index_dir = Channel.file(params.bwa_index)
+genome_bwa = file(params.genome_bwa)
+bwa_index_dir = file(params.bwa_index)
 bwa_folder = Channel.fromPath(params.bwa_index)
 
 // cat fastq
