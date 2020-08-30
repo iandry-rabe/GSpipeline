@@ -122,7 +122,7 @@ process bwaMapping {
 	file R2FqSample
 	file genome_bwa
 	file bwa_index_dir
-	path bwa_index
+	path bwa_folder
 	file catR2_ok
 
 	output:
