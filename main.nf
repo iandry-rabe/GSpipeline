@@ -131,10 +131,10 @@ process bwaMapping {
 	script:
 	"""
 	if [ -s ${R2FqSample} ]; then
-		/pipeline/tools/bwa/bwa mem -t ${params.cpus} $bwa_index ${R1FqSample} ${R2FqSample} | \\
+		/pipeline/tools/bwa/bwa mem -t ${params.cpus} $genome_bwa ${R1FqSample} ${R2FqSample} | \\
 		/pipeline/tools/samtools/samtools view -bS -q1 -@ ${params.cpus} > ${analysis_name}.bam
 	else
-		/pipeline/tools/bwa/bwa mem -t ${params.cpus} $bwa_index ${R1FqSample} | \\
+		/pipeline/tools/bwa/bwa mem -t ${params.cpus} $genome_bwa ${R1FqSample} | \\
 		/pipeline/tools/samtools/samtools view -bS -q1 -@ ${params.cpus} > ${analysis_name}.bam
 	fi
 	"""
