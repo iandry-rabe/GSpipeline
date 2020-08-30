@@ -39,8 +39,8 @@ params.results_folder = null
 // parameters
 params.cpus = null
 params.genome_bwa = null
+params.bwa_index = null
 params.genome_gatk = null
-params.genome_basename = null
 params.gatk_dbsnp = null
 params.gatk_indels = null
 
@@ -65,7 +65,8 @@ listOfFiles = file(params.input_folder)
 R1Fq = Channel.from(listOfFiles).filter(~/.*(_1.fq|R1.fastq|_R1_(\d+).fastq).gz$/)
 R2Fq = Channel.from(listOfFiles).filter(~/.*(_2.fq|R2.fastq|_R2_(\d+).fastq).gz$/)
 
-genome_bwa = Channel.fromPath(params.genome_bwa + "/*")
+genome_bwa = file(params.genome_bwa)
+bwa_index_dir = file(params.bwa_index)
 
 // cat fastq
 process catFq1 {
@@ -118,18 +119,20 @@ process bwaMapping {
 	file R1FqSample
 	file R2FqSample
 	file genome_bwa
+	file bwa_index_dir
 	file catR2_ok
 
 	output:
 	file("*.bam") into bam_files
 
 	script:
+	index_folder = bwa_index_dir.absolutePath
 	"""
 	if [ -s ${R2FqSample} ]; then
-		/pipeline/tools/bwa/bwa mem -t ${params.cpus} ${params.genome_basename} ${R1FqSample} ${R2FqSample} | \\
+		/pipeline/tools/bwa/bwa mem -t ${params.cpus} $index_folder ${R1FqSample} ${R2FqSample} | \\
 		/pipeline/tools/samtools/samtools view -bS -q1 -@ ${params.cpus} > ${analysis_name}.bam
 	else
-		/pipeline/tools/bwa/bwa mem -t ${params.cpus} ${params.genome_basename} ${R1FqSample} | \\
+		/pipeline/tools/bwa/bwa mem -t ${params.cpus} $index_folder ${R1FqSample} | \\
 		/pipeline/tools/samtools/samtools view -bS -q1 -@ ${params.cpus} > ${analysis_name}.bam
 	fi
 	"""
