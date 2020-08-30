@@ -126,7 +126,7 @@ process bwaMapping {
 	file("*.bam") into bam_files
 
 	script:
-	index_folder = bwa_index_dir.absolutePath
+	index_folder = bwa_index_dir.getParentFile().getName();
 	"""
 	if [ -s ${R2FqSample} ]; then
 		/pipeline/tools/bwa/bwa mem -t ${params.cpus} $index_folder ${R1FqSample} ${R2FqSample} | \\
