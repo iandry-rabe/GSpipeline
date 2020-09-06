@@ -171,7 +171,7 @@ process addReadGroups {
 
 	script:
 	"""
-	java -jar build/lib/picardcloud.jar AddOrReplaceReadGroups \\
+	java -jar /pipeline/tools/picard.jar AddOrReplaceReadGroups \\
 	I=${bam_files}} \\
 	O=${analysis_name}_RG.bam \\
 	RGID=4 RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=20
