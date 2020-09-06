@@ -39,8 +39,8 @@ params.results_folder = null
 // parameters
 params.cpus = null
 params.genome_bwa = null
-params.bwa_folder = null
-params.bwa_index = null
+//params.bwa_folder = null
+//params.bwa_index = null
 params.genome_gatk = null
 params.gatk_dbsnp = null
 params.gatk_indels = null
@@ -113,6 +113,21 @@ process catFq2 {
 	"""
 }
 
+process build_bwa_index {
+    publishDir "${analysis_folder}"
+
+    input:
+    file genome_bwa
+	file catR2_ok
+
+    output:
+    file "*.{amb,ann,bwt,pac,sa}" into bwa_index
+
+    """
+    /pipeline/tools/bwa/bwa index "${genome_bwa}"
+    """
+}
+
 // launch bwa
 process bwaMapping {
 	publishDir "${analysis_folder}", pattern: "*.bam"
@@ -120,10 +135,11 @@ process bwaMapping {
 	input:
 	file R1FqSample
 	file R2FqSample
-	//file genome_bwa
+	file genome_bwa
+	file "*" from bwa_index
 	//file bwa_index_dir
 	//path bwa_folder
-	file catR2_ok
+	
 
 	output:
 	file("*.bam") into bam_files
