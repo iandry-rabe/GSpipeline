@@ -193,7 +193,7 @@ process markDups {
 
 	script:
 	"""
-	gatk MarkDuplicatesSpark \\
+	/pipeline/tools/gatk/gatk MarkDuplicatesSpark \\
 	-I ${bam_RG} \\
 	-O ${analysis_name}_RG.dedup.bam \\
 	-M ${analysis_name}_markDuplicate.dups \\
@@ -215,7 +215,7 @@ process baseRecal {
 
 	script:
 	"""
-	gatk BaseRecalibrator \\
+	/pipeline/tools/gatk/gatk BaseRecalibrator \\
 	-I ${bam_dedup} \\
 	-R ${params.genome_gatk} \\
 	--known-sites ${params.gatk_dbsnp} \\
@@ -238,7 +238,7 @@ process applyBQSR {
 
 	script:
 	"""
-	gatk ApplyBQSR \\
+	/pipeline/tools/gatk/gatk ApplyBQSR \\
 	-R ${params.genome_gatk} \\
 	-I ${bam_dedup_2} \\
 	--bqsr-recal-file ${recal_table} \\
@@ -260,7 +260,7 @@ process haplotypeCaller {
 
 	script:
 	"""
-	gatk --java-options \"-Xmx8g\" HaplotypeCaller \\
+	/pipeline/tools/gatk/gatk --java-options \"-Xmx8g\" HaplotypeCaller \\
 	-R ${params.genome_gatk}} \\
 	-I ${bam_recal} \\
 	-O ${analysis_name}.all.vcf \\
