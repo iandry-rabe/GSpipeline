@@ -69,6 +69,7 @@ R2Fq = Channel.from(listOfFiles).filter(~/.*(_2.fq|R2.fastq|_R2_(\d+).fastq).gz$
 genome_bwa = file(params.genome_bwa)
 //bwa_index_dir = file(params.bwa_index)
 //bwa_folder = Channel.fromPath(params.bwa_folder)
+genome_gatk = file(params.genome_gatk)
 
 // cat fastq
 process catFq1 {
@@ -217,7 +218,7 @@ process baseRecal {
 	"""
 	/pipeline/tools/gatk/gatk BaseRecalibrator \\
 	-I ${bam_dedup} \\
-	-R ${params.genome_gatk} \\
+	-R ${genome_gatk} \\
 	--known-sites ${params.gatk_dbsnp} \\
 	--known-sites ${params.gatk_indels} \\
 	-O recalibration.table
@@ -239,7 +240,7 @@ process applyBQSR {
 	script:
 	"""
 	/pipeline/tools/gatk/gatk ApplyBQSR \\
-	-R ${params.genome_gatk} \\
+	-R ${genome_gatk} \\
 	-I ${bam_dedup_2} \\
 	--bqsr-recal-file ${recal_table} \\
 	-O ${analysis_name}_RG.dedup.recal.bam \\
@@ -263,7 +264,7 @@ process haplotypeCaller {
 	script:
 	"""
 	/pipeline/tools/gatk/gatk --java-options \"-Xmx8g\" HaplotypeCaller \\
-	-R ${params.genome_gatk}} \\
+	-R ${genome_gatk}} \\
 	-I ${bam_recal} \\
 	-O ${analysis_name}.all.vcf \\
 	-D ${params.gatk_dbsnp}
