@@ -161,14 +161,14 @@ process bwaMapping {
 
 process addReadGroups {
 	publishDir "${analysis_folder}", pattern: "*.bam"
-	publishDir "${analysis_folder}", pattern: "*.bai"
+	//publishDir "${analysis_folder}", pattern: "*.bai"
 
 	input:
 	file bam_files
 
 	output:
 	file("*_RG.bam") into bam_RG
-	file("*_RG.bam.bai") into bam_RG_index
+	//file("*_RG.bam.bai") into bam_RG_index
 
 	script:
 	"""
