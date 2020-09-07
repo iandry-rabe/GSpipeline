@@ -217,7 +217,7 @@ process baseRecal {
 	script:
 	"""
 	/pipeline/tools/gatk/gatk BaseRecalibrator \\
-	-I ${bam_dedup} \\
+	-I ${bam_dedup_1} \\
 	-R ${genome_gatk} \\
 	--known-sites ${params.gatk_dbsnp} \\
 	--known-sites ${params.gatk_indels} \\
