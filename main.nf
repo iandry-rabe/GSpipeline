@@ -172,7 +172,7 @@ process addReadGroups {
 	script:
 	"""
 	java -jar /pipeline/tools/picard.jar AddOrReplaceReadGroups \\
-	I=${bam_files}} \\
+	I=${bam_files} \\
 	O=${analysis_name}_RG.bam \\
 	RGID=4 RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=20
 	"""
@@ -248,6 +248,8 @@ process applyBQSR {
 }
 
 process haplotypeCaller {
+	cpus 32
+	
 	publishDir "${analysis_folder}", pattern: "*.vcf"
 	publishDir "${analysis_folder}", pattern: "*.vcf.idx"
 
