@@ -53,8 +53,8 @@ nfPipelinePath = "${workflow.scriptFile}"
 analysis_name = params.run_name
 
 // outputs
-analysis_folder = file(params.results_folder + "/analysis")
-//analysis_folder = file("analysis")
+//analysis_folder = file(params.results_folder + "/analysis")
+analysis_folder = file("analysis")
 analysis_folder.mkdir()
 
 //analysis_folder = file(params.results_folder + "/fastq")
