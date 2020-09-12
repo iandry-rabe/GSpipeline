@@ -74,7 +74,9 @@ genome_gatk_fai = file(params.genome_gatk + ".fai")
 genome_gatk_dict = file(params.genome_gatk.replaceAll("fasta", "dict"))
 
 gatk_dbsnp = file(params.gatk_dbsnp)
+gatk_dbsnp_idx = file(params.gatk_dbsnp + ".idx")
 gatk_indels = file(params.gatk_indels)
+gatk_indels_idx = file(params.gatk_indels + ".idx")
 
 // cat fastq
 process catFq1 {
@@ -219,7 +221,9 @@ process baseRecal {
 	file genome_gatk_fai
 	file genome_gatk_dict
 	file gatk_dbsnp
+	file gatk_dbsnp_idx
 	file gatk_indels
+	file gatk_indels_idx
 
 	output:
 	file("recalibration.table") into recal_table
@@ -273,6 +277,7 @@ process haplotypeCaller {
 	file genome_gatk_fai
 	file genome_gatk_dict
 	file gatk_dbsnp
+	file gatk_dbsnp_idx
 
 	output:
 	file("*.vcf") into vcf_all
@@ -287,7 +292,3 @@ process haplotypeCaller {
 	-D ${gatk_dbsnp}
 	"""
 }
-
-
-
-///////// add createdir
