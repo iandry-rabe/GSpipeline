@@ -70,6 +70,8 @@ genome_bwa = file(params.genome_bwa)
 //bwa_index_dir = file(params.bwa_index)
 //bwa_folder = Channel.fromPath(params.bwa_folder)
 genome_gatk = file(params.genome_gatk)
+genome_gatk_fai = file(params.genome_gatk + ".fai")
+genome_gatk_dict = file(params.genome_gatk.replaceAll("fasta", "dict"))
 
 gatk_dbsnp = file(params.gatk_dbsnp)
 gatk_indels = file(params.gatk_indels)
@@ -213,6 +215,11 @@ process baseRecal {
 
 	input:
 	file bam_dedup_1
+	file genome_gatk
+	file genome_gatk_fai
+	file genome_gatk_dict
+	file gatk_dbsnp
+	file gatk_indels
 
 	output:
 	file("recalibration.table") into recal_table
@@ -235,6 +242,9 @@ process applyBQSR {
 	input:
 	file bam_dedup_2
 	file recal_table
+	file genome_gatk
+	file genome_gatk_fai
+	file genome_gatk_dict
 
 	output:
 	file("*_RG.dedup.recal.bam") into bam_recal
@@ -259,6 +269,10 @@ process haplotypeCaller {
 
 	input:
 	file bam_recal
+	file genome_gatk
+	file genome_gatk_fai
+	file genome_gatk_dict
+	file gatk_dbsnp
 
 	output:
 	file("*.vcf") into vcf_all
