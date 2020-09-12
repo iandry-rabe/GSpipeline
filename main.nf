@@ -71,6 +71,9 @@ genome_bwa = file(params.genome_bwa)
 //bwa_folder = Channel.fromPath(params.bwa_folder)
 genome_gatk = file(params.genome_gatk)
 
+gatk_dbsnp = file(params.gatk_dbsnp)
+gatk_indels = file(params.gatk_indels)
+
 // cat fastq
 process catFq1 {
 	publishDir "${fastq_folder}/", pattern: "*.gz"
@@ -219,8 +222,8 @@ process baseRecal {
 	/pipeline/tools/gatk/gatk BaseRecalibrator \\
 	-I ${bam_dedup_1} \\
 	-R ${genome_gatk} \\
-	--known-sites ${params.gatk_dbsnp} \\
-	--known-sites ${params.gatk_indels} \\
+	--known-sites ${gatk_dbsnp} \\
+	--known-sites ${gatk_indels} \\
 	-O recalibration.table
 	"""
 }
@@ -267,7 +270,7 @@ process haplotypeCaller {
 	-R ${genome_gatk}} \\
 	-I ${bam_recal} \\
 	-O ${analysis_name}.all.vcf \\
-	-D ${params.gatk_dbsnp}
+	-D ${gatk_dbsnp}
 	"""
 }
 
